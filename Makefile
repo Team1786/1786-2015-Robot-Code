@@ -1,11 +1,10 @@
-WPILIB=/home/adam/Programs/wpiLib
 LIBS=wpi
 TEAM=1786
 
 all: deploy
 
 deploy: build
-	@echo -e "`tput bold`Copying FRCUserProgram`tput sgr0`"
+	@echo -e "Copying FRCUserProgram"
 	@ssh -q lvuser@roborio-1786.local 'rm /home/lvuser/FRCUserProgram'
 	@scp -o "LogLevel QUIET"  FRCUserProgram lvuser@roborio-1786.local:/home/lvuser/FRCUserProgram
 	@echo "Restarting FRCUserProgram"
