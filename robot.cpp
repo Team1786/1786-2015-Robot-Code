@@ -2,6 +2,8 @@
 #include <ctime>
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <sstream>
 
 class Robot : public IterativeRobot
 {
@@ -39,7 +41,9 @@ public:
 		std::cout << time(0) << std::endl;
 		
 		std::ofstream log;
-		string logPath = "/home/lvuser/logs/" + time(0) + ".log";
+		std::ostringstream convert;
+		convert << time(0);
+		std::string logPath = "/home/lvuser/logs/" + convert.str() + ".log";
 		log.open(logPath);//setting up log file
 		
 		PowerDistributionPanel pdp;	
