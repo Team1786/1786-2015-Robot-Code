@@ -37,19 +37,20 @@ public:
 	
 	void LogData()
 	{
-		// write to /home/lvuser/logs/[unixtime].log
-		std::cout << time(0) << std::endl;
-		
+		//std::cout << time(0) << std::endl;
+		// writing to /home/lvuser/logs/[unixtime].log
 		std::ofstream log;
-		std::ostringstream convert;
-		convert << time(0);
+		std::ostringstream convert;  
+		convert << time(0);//the time is its own object, and I'd rather stream it through like this than look into other conversion options.
 		std::string logPath = "/home/lvuser/logs/" + convert.str() + ".log";
-		log.open(logPath);//setting up log file
+		log.open(logPath);//finally actually opening the log file
 		
-		PowerDistributionPanel pdp;	
+		PowerDistributionPanel pdp;	//preparing to read from the pdp
+		// Some general information
 		log << "Input voltage: " << pdp.GetVoltage();
 		log << "\nTemperature: " << pdp.GetTemperature();
 		log <<"\nTotal Current: " << pdp.GetTotalCurrent() << "\n";
+		//current on each channel
 		for (int i = 0; i < 16; i++)
 		{
 			log << "Channel " << i << "current: " << pdp.GetCurrent(i) << "\n";
