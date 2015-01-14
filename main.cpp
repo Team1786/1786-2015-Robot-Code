@@ -8,15 +8,16 @@
  *     - PWM 4 - Connected to rear right drive motor
  */class MecanumDefaultCode : public IterativeRobot
 {
-	RobotDrive *m_robotDrive;		// RobotDrive object using PWM 1-4 for drive motors
+	RobotDrive *m_robotDrive;		// RobotDrive object using CAN for drive motors
+	CANTalon leftFront, leftBack, rightFront, rightBack; // Aforementioned motors
 	Joystick *m_driveStick;			// Joystick object on USB port 1 (mecanum drive)public:
 	/**
 	 * Constructor for this "MecanumDefaultCode" Class.
 	 */
 	MecanumDefaultCode(void)
 	{
-		// Create a RobotDrive object using PWMS 1, 2, 3, and 4
-		m_robotDrive = new RobotDrive(1, 2, 3, 4);
+		// Create a RobotDrive object using CAN drive motors
+		m_robotDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 		// Define joystick being used at USB port #1 on the Drivers Station
 		m_driveStick = new Joystick(1);
 		// Twist is on Axis 3 for the Extreme 3D Pro
@@ -27,6 +28,7 @@
 	 */
 	void TeleopPeriodic(void)
 	{
+		// Driving
 		m_robotDrive->MecanumDrive_Cartesian(m_driveStick->GetX(), m_driveStick->GetY(), m_driveStick->GetTwist());
 	}
 };
