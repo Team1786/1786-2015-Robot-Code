@@ -15,7 +15,7 @@ deploy: build
 
 build:
 	@echo "Building FRCUserProgram"
-	arm-frc-linux-gnueabi-g++ robot.cpp -o FRCUserProgram -l$(LIBS) -std=c++11
+	arm-frc-linux-gnueabi-g++ robot.cpp -o FRCUserProgram -l$(LIBS) -std=c++11 -L/home/aidan/Robotics/WPILib/lib -I/home/aidan/Robotics/WPILib/include
 
 clean:
 	rm FRCUserProgram
