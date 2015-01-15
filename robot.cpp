@@ -41,19 +41,21 @@ public:
 		// writing to /home/lvuser/logs/[unixtime].log
 		std::ofstream log;
 		std::ostringstream convert;  
-		convert << time(0);//the time is its own object, and I'd rather stream it through like this than look into other conversion options.
-		std::string logPath = "/home/lvuser/logs/" + convert.str() + ".log";
+		time_t now = time(0);
+		convert << now;//I'd rather stream it through like this than actually think about.
+		std::string logPath = "/home/lvuser/logs/" + convert.str() + ".csv";
 		log.open(logPath);//finally actually opening the log file
 		
+		log << now << ",";
 		PowerDistributionPanel pdp;	//preparing to read from the pdp
 		// Some general information
-		log << "Input voltage: " << pdp.GetVoltage();
-		log << "\nTemperature: " << pdp.GetTemperature();
-		log <<"\nTotal Current: " << pdp.GetTotalCurrent() << "\n";
+		log << "Input voltage," << pdp.GetVoltage();
+		log << ",Temperature," << pdp.GetTemperature();
+		log << ",Total Current," << pdp.GetTotalCurrent();
 		//current on each channel
 		for (int i = 0; i < 16; i++)
 		{
-			log << "Channel " << i << "current: " << pdp.GetCurrent(i) << "\n";
+			log << ",Channel " << i << "current," << pdp.GetCurrent(i);
 		}	
 		log.close();	
 	}
