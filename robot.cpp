@@ -46,16 +46,16 @@ public:
 		std::string logPath = "/home/lvuser/logs/" + convert.str() + ".csv";
 		log.open(logPath);//finally actually opening the log file
 		
-		log << now << ",";
+		log << now << std::endl;
 		PowerDistributionPanel pdp;	//preparing to read from the pdp
 		// Some general information
-		log << "Input voltage," << pdp.GetVoltage();
-		log << ",Temperature," << pdp.GetTemperature();
-		log << ",Total Current," << pdp.GetTotalCurrent();
+		log << "Input voltage," << pdp.GetVoltage() << std::endl;
+		log << "Temperature," << pdp.GetTemperature() << std::endl;
+		log << "Total Current," << pdp.GetTotalCurrent();
 		//current on each channel
 		for (int i = 0; i < 16; i++)
 		{
-			log << ",Channel " << i << "current," << pdp.GetCurrent(i);
+			log << "Channel " << i << " current," << pdp.GetCurrent(i) << std::endl;
 		}	
 		log.close();	
 	}
