@@ -57,6 +57,10 @@ public:
 			{
 				log << "pdpChannel " << i << " current\t";
 			}
+			log << "\tFrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
+			log << "\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature";
+			log << "\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature";
+			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
 			log << std::endl;
 		}
 		// I never claimed to be good with std::chrono
@@ -72,6 +76,23 @@ public:
 		{
 			log << pdp.GetCurrent(i) << "\t";
 		}
+		//Talon Data
+		log << "\t" <<frontLeft.GetBusVoltage();
+		log << "\t" <<frontLeft.GetOutputVoltage();
+		log << "\t" <<frontLeft.GetOutputCurrent();
+		log << "\t" <<frontLeft.GetTemperature();
+		log << "\t" <<frontRight.GetBusVoltage();
+		log << "\t" <<frontRight.GetOutputVoltage();
+		log << "\t" <<frontRight.GetOutputCurrent();
+		log << "\t" <<frontRight.GetTemperature();
+		log << "\t" <<rearLeft.GetBusVoltage();
+		log << "\t" <<rearLeft.GetOutputVoltage();
+		log << "\t" <<rearLeft.GetOutputCurrent();
+		log << "\t" <<rearLeft.GetTemperature();
+		log << "\t" <<rearRight.GetBusVoltage();
+		log << "\t" <<rearRight.GetOutputVoltage();
+		log << "\t" <<rearRight.GetOutputCurrent();
+		log << "\t" <<rearRight.GetTemperature();
 		log << std::endl;
 	}
 };
