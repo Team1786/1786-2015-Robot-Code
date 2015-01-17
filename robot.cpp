@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream>
+#include <chrono>
 
 class Robot : public IterativeRobot
 {
@@ -17,6 +17,11 @@ public:
 		driveStick(1)
 	{
 
+	}
+
+	void DisabledPeriodic()
+	{
+		LogData();
 	}
 
 	void TeleopInit()
@@ -34,30 +39,35 @@ public:
 		//Data logging
 		LogData();
 	}
-	
+
 	void LogData()
 	{
-		//std::cout << time(0) << std::endl;
-		// writing to /home/lvuser/logs/[unixtime].log
-		std::ofstream log;
-		std::ostringstream convert;  
-		time_t now = time(0);
-		convert << now;//I'd rather stream it through like this than actually think about.
-		std::string logPath = "/home/lvuser/logs/" + convert.str() + ".csv";
-		log.open(logPath);//finally actually opening the log file
-		
-		log << now << std::endl;
-		PowerDistributionPanel pdp;	//preparing to read from the pdp
+		static std::ofstream log;
+		if (!log.is_open())
+		{
+			// writing to /home/lvuser/logs/[unixtime].log
+			log.open("/home/lvuser/logs/" + std::to_string(time(0)) +".csv");
+			log << "Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t";
+			for (int i = 0; i < 16; i++)
+			{
+				log << "pdpChannel " << i << " current\t";
+			}
+			log << std::endl;
+		}
+		// I never claimed to be good with std::chrono
+		unsigned long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		log << std::to_string(now) << "\t";
+		PowerDistributionPanel pdp;	// preparing to read from the pdp
 		// Some general information
-		log << "Input voltage," << pdp.GetVoltage() << std::endl;
-		log << "Temperature," << pdp.GetTemperature() << std::endl;
-		log << "Total Current," << pdp.GetTotalCurrent();
-		//current on each channel
+		log << pdp.GetVoltage() << "\t";
+		log << pdp.GetTemperature() << "\t";
+		log <<  pdp.GetTotalCurrent() << "\t";
+		// current on each channel
 		for (int i = 0; i < 16; i++)
 		{
-			log << "Channel " << i << " current," << pdp.GetCurrent(i) << std::endl;
-		}	
-		log.close();	
+			log << pdp.GetCurrent(i) << "\t";
+		}
+		log << std::endl;
 	}
 };
 
