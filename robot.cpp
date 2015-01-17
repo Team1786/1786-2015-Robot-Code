@@ -10,10 +10,15 @@ class Robot : public IterativeRobot
 private:
 	RobotDrive drivetrain;
 	Joystick driveStick;
+	CANTalon frontLeft, frontRight,
+	         rearLeft, rearRight;
 
 public:
 	Robot():
-		drivetrain(0, 1),
+		frontLeft(0), frontRight(1),
+		rearLeft(2), rearRight(3),
+		drivetrain(frontLeft, rearLeft,
+		           frontRight, rearRight),
 		driveStick(1)
 	{
 
