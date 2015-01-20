@@ -41,7 +41,7 @@ public:
 	{
 		//Driving
 		drivetrain.MecanumDrive_Cartesian(driveStick.GetX(), driveStick.GetY(), driveStick.GetTwist());
-		
+
 		//Data logging
 		LogData();
 	}
