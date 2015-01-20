@@ -1,9 +1,10 @@
 #include "WPILib.h"
 #include <ctime>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
-#include <chrono>
+#include <sys/time.h>
 
 class Robot : public IterativeRobot
 {
@@ -47,6 +48,7 @@ public:
 
 	void LogData()
 	{
+		timeval tm;
 		static std::ofstream log;
 		if (!log.is_open())
 		{
@@ -63,9 +65,8 @@ public:
 			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
 			log << std::endl;
 		}
-		// I never claimed to be good with std::chrono
-		unsigned long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		log << std::to_string(now) << "\t";
+		gettimeofday(&tm, NULL);
+		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000 << "\t";
 		PowerDistributionPanel pdp;	// preparing to read from the pdp
 		// Some general information
 		log << pdp.GetVoltage() << "\t";
