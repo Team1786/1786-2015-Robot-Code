@@ -66,16 +66,16 @@ public:
 			log << std::endl;
 		}
 		gettimeofday(&tm, NULL);
-		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000 << "\t";
+		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000;
 		PowerDistributionPanel pdp;	// preparing to read from the pdp
 		// Some general information
-		log << pdp.GetVoltage() << "\t";
-		log << pdp.GetTemperature() << "\t";
-		log <<  pdp.GetTotalCurrent() << "\t";
+		log << "\t" << pdp.GetVoltage();
+		log << "\t" << pdp.GetTemperature();
+		log << "\t" << pdp.GetTotalCurrent();
 		// current on each channel
 		for (int i = 0; i < 16; i++)
 		{
-			log << pdp.GetCurrent(i) << "\t";
+			log << "\t" << pdp.GetCurrent(i);
 		}
 		//Talon Data
 		log << "\t" <<frontLeft.GetBusVoltage();
