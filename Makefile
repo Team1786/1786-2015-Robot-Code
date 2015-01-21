@@ -10,8 +10,6 @@ deploy: build
 	@scp $(SSH_OPTIONS) -o "LogLevel QUIET" FRCUserProgram lvuser@roborio-1786.local:/home/lvuser/FRCUserProgram
 	@echo "Restarting FRCUserProgram"
 	@ssh $(SSH_OPTIONS) admin@roborio-1786.local '. /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r'
-# delete next line when previous works
-	@ssh $(SSH_OPTIONS) admin@roborio-1786.local '. /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcRunRobot.sh'
 
 build:
 	@echo "Building FRCUserProgram"
