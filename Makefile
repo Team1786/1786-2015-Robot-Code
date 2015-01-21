@@ -1,6 +1,7 @@
 LIBS=wpi
 TEAM=1786
-SSH_OPTIONS=-q -i id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+SSH_OPTIONS=-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+SSH_SSHPASS=$(shell command -v sshpass >/dev/null 2>&1 && echo -n "sshpass -p ''")
 
 all: deploy
 
@@ -9,7 +10,7 @@ deploy: build
 	@ssh $(SSH_OPTIONS) lvuser@roborio-1786.local 'rm /home/lvuser/FRCUserProgram'
 	@scp $(SSH_OPTIONS) -o "LogLevel QUIET" FRCUserProgram lvuser@roborio-1786.local:/home/lvuser/FRCUserProgram
 	@echo "Restarting FRCUserProgram"
-	@ssh $(SSH_OPTIONS) admin@roborio-1786.local '. /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r'
+	@$(SSH_SSHPASS) ssh $(SSH_OPTIONS) admin@roborio-1786.local '. /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r'
 
 build:
 	@echo "Building FRCUserProgram"
