@@ -1,5 +1,5 @@
 LIBS=wpi
-override CFLAGS += -l$(LIBS)
+override CFLAGS +=-l$(LIBS) -std=c++11
 TEAM=1786
 SSH_OPTIONS=-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 SSH_SSHPASS=$(shell command -v sshpass >/dev/null 2>&1 && echo -n "sshpass -p ''")
@@ -10,7 +10,7 @@ build: FRCUserProgram
 
 FRCUserProgram: robot.cpp
 	@echo "Building FRCUserProgram"
-	arm-frc-linux-gnueabi-g++ robot.cpp -o FRCUserProgram -std=c++11
+	arm-frc-linux-gnueabi-g++ robot.cpp -o FRCUserProgram $(CFLAGS)
 
 clean:
 	rm FRCUserProgram
