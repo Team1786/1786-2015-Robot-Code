@@ -59,10 +59,11 @@ public:
 			{
 				log << "pdpChannel " << i << " current\t";
 			}
-			log << "\tFrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
+			log << "FrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
 			log << "\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature";
 			log << "\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature";
 			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
+			log << "\tJoystic X\tJoystic Y\tJoystick Twist";
 			log << std::endl;
 		}
 		gettimeofday(&tm, NULL);
@@ -94,6 +95,11 @@ public:
 		log << "\t" <<rearRight.GetOutputVoltage();
 		log << "\t" <<rearRight.GetOutputCurrent();
 		log << "\t" <<rearRight.GetTemperature();
+		
+		//control data
+		log << "\t" << driveStick.GetX();
+		log << "\t" << driveStick.GetY();
+		log << "\t" << driveStick.GetTwist();
 		log << std::endl;
 	}
 };
