@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sys/time.h>
+#include <Timer.h>
 
 class Robot : public IterativeRobot
 {
@@ -23,6 +24,40 @@ public:
 		driveStick(1)
 	{
 
+	}
+	
+	void AutonomousPeriodic()
+	{
+		//testing things
+		frontLeft.Set(1);
+		waiting();
+		/*leep(2000);
+		frontLeft.Set(-1);
+		sleep(2000);
+		frontLeft.Set(0);
+		frontRight.Set(1);
+		sleep(2000);
+		frontRight.Set(-1);
+		sleep(2000);
+		frontRight.Set(0);
+		//rear wheels
+		rearLeft.Set(1);
+		sleep(2000);
+		rearLeft.Set(-1);
+		sleep(2000);
+		rearLeft.Set(0);
+		rearRight.Set(1);
+		sleep(2000);
+		rearRight.Set(-1);
+		sleep(2000);
+		rearRight.Set(0);*/
+	}
+	
+	void waiting()
+	{
+			Timer thing = Timer();
+			thing.Start();
+			while (!thing.HasPeriodPassed(2)) {}
 	}
 
 	void DisabledPeriodic()
