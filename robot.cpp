@@ -29,7 +29,8 @@ public:
 	void TeleopPeriodic()
 	{
 		//Driving
-		drivetrain.MecanumDrive_Cartesian(driveStick.GetX(), driveStick.GetY(), driveStick.GetTwist());
+		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
+		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
 	}
 };
 
