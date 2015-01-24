@@ -40,8 +40,52 @@ public:
 	void TeleopPeriodic()
 	{
 		//Driving
+		const float up = .05;
+		static float x = 0;
+		static float y = 0;
+		static float twist = 0;
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
-		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
+
+		//X
+		if (x <= (driveStick.GetX() + up) || x >= (driveStick.GetX() - up))
+		{
+			x = driveStick.GetX() * throttleScale;
+		}
+		else if (x < driveStick.GetX())
+		{
+			x = (x + up) * throttleScale;
+		}
+		else
+		{
+			x = (x - up) * throttleScale;
+		}
+		//Y
+		if (y <= (driveStick.GetY() + up) || y >= (driveStick.GetY() - up))
+		{
+			y = driveStick.GetY() * throttleScale;
+		}
+		else if (y < driveStick.GetY())
+		{
+			y = (y + up) * throttleScale;
+		}
+		else
+		{
+			y = (y - up) * throttleScale;
+		}
+		//Twist
+		if (twist <= (driveStick.GetTwist() + up) || twist >= (driveStick.GetTwist() - up))
+		{
+			twist = driveStick.GetTwist() * throttleScale;
+		}
+		else if (twist < driveStick.GetTwist())
+		{
+			twist = (twist + up) * throttleScale;
+		}
+		else
+		{
+			twist = (twist - up) * throttleScale;
+		}
+		drivetrain.MecanumDrive_Cartesian(x, y, twist*driveStick.GetRawButton(2));
 
 		//Data logging
 		LogData();
