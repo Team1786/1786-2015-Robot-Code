@@ -5,10 +5,11 @@ class Robot : public IterativeRobot
 {
 private:
 	RobotDrive drivetrain;
-	Joystick driveStick;
+	Joystick driveStick, lifterStick;
 	CANTalon frontLeft, frontRight,
 	         rearLeft, rearRight;
 	DigitalInput winchTension;
+	CANTalon winch;
 
 public:
 	Robot():
@@ -16,8 +17,9 @@ public:
 		rearLeft(2), rearRight(3),
 		drivetrain(frontLeft, rearLeft,
 		           frontRight, rearRight),
-		driveStick(1),
-		winchTension(0)
+		driveStick(0), lifterStick(1),
+		winchTension(0),
+		winch(4)
 	{
 
 	}
@@ -35,6 +37,7 @@ public:
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
 		std::cout << "Winch tension limit switch: " << winchTension.Get() << std::endl;		
+		winch.Set(lifterStick.GetY());
 	}
 };
 
