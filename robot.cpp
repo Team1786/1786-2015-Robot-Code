@@ -4,7 +4,7 @@ class Robot : public IterativeRobot
 {
 private:
 	RobotDrive drivetrain;
-	Joystick driveStick;
+	Joystick driveStick, lifterStick;
 	CANTalon frontLeft, frontRight,
 	         rearLeft, rearRight;
 
@@ -14,7 +14,7 @@ public:
 		rearLeft(2), rearRight(3),
 		drivetrain(frontLeft, rearLeft,
 		           frontRight, rearRight),
-		driveStick(1)
+		driveStick(0), lifterStick(1)
 	{
 
 	}
