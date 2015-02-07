@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include <iostream>
+#include <vector>
 
 class Robot : public IterativeRobot
 {
@@ -10,6 +11,8 @@ private:
 	         rearLeft, rearRight;
 	DigitalInput winchTension;
 	CANTalon winch;
+	std::vector<DigitalInput*> winchLimits;
+	DigitalInput a,b,c,d,e,f,g;
 
 public:
 	Robot():
@@ -19,9 +22,26 @@ public:
 		           frontRight, rearRight),
 		driveStick(0), lifterStick(1),
 		winchTension(0),
-		winch(4)
+		winch(4),
+		a(1), b(2), c(3), d(4), e(5), f(6), g(7)
 	{
+		winchLimits.push_back(&a);
+		winchLimits.push_back(&b);
+		winchLimits.push_back(&c);
+		winchLimits.push_back(&d);
+		winchLimits.push_back(&e);
+		winchLimits.push_back(&f);
+		winchLimits.push_back(&g);
+	}
 
+	void DisabledPeriodic()
+	{
+		int ii=0;
+		for(ii=0;ii<6;ii++)
+		{
+			std::cout << " limit " << ii << ":" << winchLimits[ii]->Get();
+		}
+		std::cout << std::endl;
 	}
 
 	void TeleopInit()
