@@ -36,7 +36,7 @@ public:
 		//Driving
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
-		std::cout << "Winch tension limit switch: " << winchTension.Get() << std::endl;		
+		std::cout << "Winch tension limit switch: " << winchTension.Get() << std::endl;	// this reads 0 when the switch is closed, because of the way the roborio is wired internally.	
 		winch.Set(lifterStick.GetY());
 	}
 };
