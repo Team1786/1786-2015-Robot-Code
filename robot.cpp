@@ -34,14 +34,61 @@ public:
 		winchLimits.push_back(&g);
 	}
 
-	void DisabledPeriodic()
+	bool getLimit(int num)
 	{
-		int ii=0;
-		for(ii=0;ii<6;ii++)
+		//invert everything other than top and bottom because the roboRIO reports open as 1
+		//top and bottom are not inverted becuase they they are NC (whereas the rest are NO) 
+		return (num == 0 || num == 5) ? winchLimits[num]->Get() : !winchLimits[num]->Get();
+	}
+
+	void updateWinch(int t)
+	{
+		static int target=-1;
+		static int lastLimit=-1;
+
+		//iterate through all of the limits, and save the last one
+		for(int ii=0;ii<=5;ii++)
 		{
-			std::cout << " limit " << ii << ":" << winchLimits[ii]->Get();
+			if(getLimit(ii)) lastLimit=ii; 
 		}
-		std::cout << std::endl;
+		std::cout << lastLimit << std::endl;
+
+		//check if we have a new target
+		if(t > -1) target=t;
+
+		//clear target if -2 passed (for disable)
+		if(t == -2) target=-1;
+
+		//check if we have hit an end stop
+		if(getLimit(0) || getLimit(5))
+		{
+			winch.Set(0);
+			std::cout << "Winch limit hit, stopping" << std::endl;
+		}
+
+		//if the stick is not being used, and we have a target, turn on the motor
+		else if(abs(lifterStick.GetY()) < 0.05 && target != -1)
+		{
+			if(getLimit(target))
+				//if the target is above the lastLimit, go up (-1), else go down (1)
+				winch.Set(target>lastLimit?-1:1);
+			else
+			{
+				winch.Set(0);
+				target=-1; //clear the target
+			}
+		}
+		else
+		{
+			winch.Set(lifterStick.GetY());
+			target=-1; //clear the target
+		}
+	}
+
+	void DisabledInit()
+	{
+		//clear winch target
+		updateWinch(-2);
 	}
 
 	void TeleopInit()
@@ -56,8 +103,12 @@ public:
 		//Driving
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
-		std::cout << "Winch tension limit switch: " << winchTension.Get() << std::endl;	// this reads 0 when the switch is closed, because of the way the roborio is wired internally.	
-		winch.Set(lifterStick.GetY());
+		int winchButton=-1;
+		for(int jj=7;jj<=12;jj++)
+		{
+			if(lifterStick.GetRawButton(jj)) winchButton=(jj-6);
+		}
+		updateWinch(winchButton);
 	}
 };
 
