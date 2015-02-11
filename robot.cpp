@@ -51,7 +51,7 @@ public:
 		{
 			if(getLimit(ii)) lastLimit=ii; 
 		}
-		std::cout << lastLimit << std::endl;
+		std::cout << "level: " << lastLimit << std::endl;
 
 		//check if we have a new target
 		if(t > -1) target=t;
