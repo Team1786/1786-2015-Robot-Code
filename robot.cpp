@@ -58,18 +58,19 @@ public:
 
 		//clear target if -2 passed (for disable)
 		if(t == -2) target=-1;
+		std::cout << "target: " << target << " t:" << t << std::endl;
 
 		//check if we have hit an end stop
 		if(getLimit(0) || getLimit(5))
 		{
-			winch.Set(0);
+			winch.Set(((getLimit(0) && lifterStick.GetY() < 0) || (getLimit(5) && lifterStick.GetY() > 0)) ? lifterStick.GetY() : 0);
 			std::cout << "Winch limit hit, stopping" << std::endl;
 		}
 
 		//if the stick is not being used, and we have a target, turn on the motor
 		else if(abs(lifterStick.GetY()) < 0.05 && target != -1)
 		{
-			if(getLimit(target))
+			if(!getLimit(target))
 				//if the target is above the lastLimit, go up (-1), else go down (1)
 				winch.Set(target>lastLimit?-1:1);
 			else
