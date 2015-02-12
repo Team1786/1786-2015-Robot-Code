@@ -61,9 +61,10 @@ public:
 		std::cout << "target: " << target << " t:" << t << std::endl;
 
 		//check if we have hit an end stop
-		if(getLimit(0) || getLimit(5))
+		if(lastLimit == 0 || lastLimit == 5)
 		{
 			winch.Set(((getLimit(0) && lifterStick.GetY() < 0) || (getLimit(5) && lifterStick.GetY() > 0)) ? lifterStick.GetY() : 0);
+			target=-1;
 			std::cout << "Winch limit hit, stopping" << std::endl;
 		}
 
