@@ -108,7 +108,7 @@ public:
 		int winchButton=-1;
 		for(int jj=7;jj<=12;jj++)
 		{
-			if(lifterStick.GetRawButton(jj)) winchButton=(jj-6);
+			if(lifterStick.GetRawButton(jj)) winchButton=(jj-7);
 		}
 		updateWinch(winchButton);
 		gripper.Set(-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270));
