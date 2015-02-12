@@ -10,7 +10,7 @@ private:
 	CANTalon frontLeft, frontRight,
 	         rearLeft, rearRight;
 	DigitalInput winchTension;
-	CANTalon winch;
+	CANTalon winch, gripper;
 	std::vector<DigitalInput*> winchLimits;
 	DigitalInput a,b,c,d,e,f,g;
 
@@ -22,7 +22,7 @@ public:
 		           frontRight, rearRight),
 		driveStick(0), lifterStick(1),
 		winchTension(0),
-		winch(4),
+		winch(4), gripper(5),
 		a(1), b(2), c(3), d(4), e(5), f(6), g(7)
 	{
 		winchLimits.push_back(&a);
@@ -110,6 +110,7 @@ public:
 			if(lifterStick.GetRawButton(jj)) winchButton=(jj-6);
 		}
 		updateWinch(winchButton);
+		gripper.Set(-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270));
 	}
 };
 
