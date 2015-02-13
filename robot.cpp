@@ -19,6 +19,11 @@ public:
 
 	}
 
+	void DisabledInit()
+	{
+		drivetrain.SetSafetyEnabled(false);  //disable watchdog
+	}
+
 	void TeleopInit()
 	{
 		printf("Starting Teleop mode");
