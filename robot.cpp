@@ -104,6 +104,7 @@ public:
 	{
 		//Driving
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
+		float gripperScale = ((1 - lifterStick.GetThrottle()) / 2);
 		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
 		int winchButton=-1;
 		for(int jj=7;jj<=12;jj++)
@@ -111,7 +112,7 @@ public:
 			if(lifterStick.GetRawButton(jj)) winchButton=(jj-7);
 		}
 		updateWinch(winchButton);
-		gripper.Set(-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270));
+		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270))*gripperScale);
 	}
 };
 
