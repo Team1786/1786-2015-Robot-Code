@@ -89,6 +89,7 @@ public:
 
 	void DisabledInit()
 	{
+		drivetrain.SetSafetyEnabled(false);  //disable watchdog
 		//clear winch target
 		updateWinch(-2);
 	}
