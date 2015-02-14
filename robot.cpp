@@ -57,11 +57,23 @@ public:
 		if(t > -1) target=t;
 		//clear target if -2 passed (for disable)
 		if(t == -2) target=-1;
+		//check for down
+		if(t == -3) target=-3;
 
 		//if the stick is not being used, and we have a target, turn on the motor
 		if(abs(lifterStick.GetY()) < 0.01 && target != -1)
 		{
-			if(!getLimit(target))
+			if(target == -3)
+			{
+				if(winchTension.Get()) //check for tension
+					out = 1; //go down
+				else
+				{
+					out = 0;
+					target = -1;
+				}
+			}
+			else if(!getLimit(target))
 				//if the target is above the lastLimit, go up (-1), else go down (1)
 				out=target<lastLimit?1:-1;
 			else
@@ -119,6 +131,7 @@ public:
 		{
 			if(lifterStick.GetRawButton(jj)) winchButton=(jj-7);
 		}
+		winchButton = lifterStick.GetRawButton(1) ? -3 : winchButton;
 		updateWinch(winchButton);
 		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270))*gripperScale);
 	}
