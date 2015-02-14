@@ -45,46 +45,53 @@ public:
 	{
 		static int target=-1;
 		static int lastLimit=-1;
+		float out=0;
 
 		//iterate through all of the limits, and save the last one
 		for(int ii=0;ii<=5;ii++)
 		{
 			if(getLimit(ii)) lastLimit=ii; 
 		}
-		std::cout << "level: " << lastLimit << std::endl;
 
 		//check if we have a new target
 		if(t > -1) target=t;
-
 		//clear target if -2 passed (for disable)
 		if(t == -2) target=-1;
-		std::cout << "target: " << target << " t:" << t << std::endl;
-
-		//check if we have hit an end stop
-		if(lastLimit == 0 || lastLimit == 5)
-		{
-			winch.Set(((getLimit(0) && lifterStick.GetY() < 0) || (getLimit(5) && lifterStick.GetY() > 0)) ? lifterStick.GetY() : 0);
-			target=-1;
-			std::cout << "Winch limit hit, stopping" << std::endl;
-		}
 
 		//if the stick is not being used, and we have a target, turn on the motor
-		else if(abs(lifterStick.GetY()) < 0.05 && target != -1)
+		if(abs(lifterStick.GetY()) < 0.01 && target != -1)
 		{
 			if(!getLimit(target))
 				//if the target is above the lastLimit, go up (-1), else go down (1)
-				winch.Set(target>lastLimit?-1:1);
+				out=target>lastLimit?-1:1;
 			else
 			{
-				winch.Set(0);
+				out=0;
 				target=-1; //clear the target
 			}
 		}
 		else
 		{
-			winch.Set(lifterStick.GetY());
+			out=lifterStick.GetY();
 			target=-1; //clear the target
 		}
+
+		//check if we have hit an end stop
+		if(getLimit(0) || getLimit(5))
+		{
+			if((getLimit(0) && (out < 0))  || (getLimit(5) && (out > 0)))
+			{
+				winch.Set(out);
+				std::cout << "Winch limit hit, limiting movement" << std::endl;
+			}
+			else
+			{
+				winch.Set(0);
+				std::cout << "Winch limit hit, stopping" << std::endl;
+			}
+		}
+		else
+			winch.Set(out);
 	}
 
 	void DisabledInit()
