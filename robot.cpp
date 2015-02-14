@@ -63,7 +63,7 @@ public:
 		{
 			if(!getLimit(target))
 				//if the target is above the lastLimit, go up (-1), else go down (1)
-				out=target>lastLimit?-1:1;
+				out=target<lastLimit?1:-1;
 			else
 			{
 				out=0;
