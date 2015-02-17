@@ -2,6 +2,9 @@
 #include <iostream>
 #include <vector>
 
+#define AUTO_TARGET 5 //TODO: get a real value for this
+#define FT_PER_TICK 1.57  //0.000767
+
 class Robot : public IterativeRobot
 {
 private:
@@ -41,7 +44,7 @@ public:
 		return (num == 0 || num == 5) ? winchLimits[num]->Get() : !winchLimits[num]->Get();
 	}
 
-	void updateWinch(int t)
+	bool updateWinch(int t)
 	{
 		static int target=-1;
 		static int lastLimit=-1;
@@ -104,6 +107,7 @@ public:
 		}
 		else
 			winch.Set(out);
+		return (target == -1);
 	}
 
 	void DisabledInit()
@@ -111,6 +115,53 @@ public:
 		drivetrain.SetSafetyEnabled(false);  //disable watchdog
 		//clear winch target
 		updateWinch(-2);
+	}
+
+	void AutonomousInit()
+	{
+		frontLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
+		frontRight.SetFeedbackDevice(CANTalon::QuadEncoder);
+		rearLeft.SetFeedbackDevice(CANTalon::QuadEncoder);
+		rearRight.SetFeedbackDevice(CANTalon::QuadEncoder);
+		frontLeft.SetPosition(0);
+		frontRight.SetPosition(0);
+		rearLeft.SetPosition(0);
+		rearRight.SetPosition(0);
+	}
+
+	void AutonomousPeriodic()
+	{
+		static short stage=0;
+		switch(stage)
+		{
+		case 0:
+			//TODO: grip grippers
+			stage=1;
+			break;
+		case 1:
+			//stage = updateWinch(1) * 2;
+			stage=2;
+			break;
+		case 2:
+			//check if we are at our destination distance
+			if(/*frontLeft.GetPosition()  * FT_PER_REV < AUTO_TARGET &&
+			     frontRight.GetPosition() * FT_PER_REV < AUTO_TARGET &&*/
+			   abs(rearLeft.GetPosition())   * FT_PER_TICK < AUTO_TARGET &&
+			   abs(rearRight.GetPosition())  * FT_PER_TICK < AUTO_TARGET)
+			{
+				drivetrain.MecanumDrive_Cartesian(0, -0.2, 0); //drive forwards
+			}
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				stage = 3;
+			}
+			break;
+		case 3:
+			stage = updateWinch(-3) * 4;
+			break;
+		}
+		std::cout << "rearLeft: " << rearLeft.GetPosition() << " rearRight: "  << rearRight.GetPosition()<< std::endl;
 	}
 
 	void TeleopInit()
