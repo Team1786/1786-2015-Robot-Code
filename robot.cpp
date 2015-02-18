@@ -149,6 +149,9 @@ public:
 			log << "\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature";
 			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
 			log << "\tJoystic X\tJoystic Y\tJoystick Twist";
+			log << "\tWinch Bus Voltage\tWinch Output Current\tWinch Output Voltage\tWinch Temperature";
+			log << "\tGripper Bus Voltage\tGripper Output Current\tGripper Output Voltage\tGripper Temperature";
+			log << "\tWinch Tension\t Winch a\t Winch b\t Winch c\t Winch d\t Winch e\t Winch f\t Winch g";
 			log << std::endl;
 		}
 		gettimeofday(&tm, NULL);
@@ -163,7 +166,7 @@ public:
 		{
 			log << "\t" << pdp.GetCurrent(i);
 		}
-		//Talon Data
+		//Talon Data: drivetrain
 		log << "\t" <<frontLeft.GetBusVoltage();
 		log << "\t" <<frontLeft.GetOutputVoltage();
 		log << "\t" <<frontLeft.GetOutputCurrent();
@@ -186,6 +189,26 @@ public:
 		log << "\t" << driveStick.GetY();
 		log << "\t" << driveStick.GetTwist();
 		log << std::endl;
+		
+		//More Talon Data: winch & gripper
+		log << "\t" <<winch.GetBusVoltage();
+		log << "\t" <<winch.GetOutputVoltage();
+		log << "\t" <<winch.GetOutputCurrent();
+		log << "\t" <<winch.GetTemperature();
+		log << "\t" <<gripper.GetBusVoltage();
+		log << "\t" <<gripper.GetOutputVoltage();
+		log << "\t" <<gripper.GetOutputCurrent();
+		log << "\t" <<gripper.GetTemperature();
+		
+		//Winch Limits
+		log << "\t" << winchTension.Get();
+		log << "\t" << a.Get();
+		log << "\t" << b.Get();
+		log << "\t" << c.Get();
+		log << "\t" << d.Get();
+		log << "\t" << e.Get();
+		log << "\t" << f.Get();
+		log << "\t" << g.Get();
 	}
 };
 
