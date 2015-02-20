@@ -144,10 +144,11 @@ public:
 			// writing to /home/lvuser/logs/[unixtime].log
 			log.open("/home/lvuser/logs/" + std::to_string(time(0)) +".csv");
 			log << "Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t";
-			for (int i = 0; i < 16; i++)
+			for (int ii = 0; ii < 16; ii++)
 			{
-				log << "pdpChannel " << i << " current\t";
+				log << "pdpChannel " << ii << " current\t";
 			}
+
 			log << "FrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
 			motors.push_back(&frontLeft);
 			log << "\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature";
@@ -159,8 +160,14 @@ public:
 			log << "\tWinch Bus Voltage\tWinch Output Current\tWinch Output Voltage\tWinch Temperature";
 			motors.push_back(&winch);
 			log << "\tGripper Bus Voltage\tGripper Output Current\tGripper Output Voltage\tGripper Temperature";
-			log << "\tWinch Tension\t Winch a\t Winch b\t Winch c\t Winch d\t Winch e\t Winch f\t Winch g";
 			motors.push_back(&gripper);
+
+			log << "\tJoystick X\tJoystick Y\tJoystick Twist";
+			log << "\tWinch Tension";
+			for(int ii = 0; ii <= 5; ii++)
+			{
+				log << "\t Winch Limit " << ii;
+			}
 			log << std::endl;
 		}
 		gettimeofday(&tm, NULL);
@@ -170,9 +177,9 @@ public:
 		log << "\t" << pdp.GetTemperature();
 		log << "\t" << pdp.GetTotalCurrent();
 		// current on each channel
-		for (int i = 0; i < 16; i++)
+		for (int ii = 0; ii < 16; ii++)
 		{
-			log << "\t" << pdp.GetCurrent(i);
+			log << "\t" << pdp.GetCurrent(ii);
 		}
 		
 		//Talon Data
@@ -192,13 +199,10 @@ public:
 		
 		//Winch Limits
 		log << "\t" << winchTension.Get();
-		log << "\t" << a.Get();
-		log << "\t" << b.Get();
-		log << "\t" << c.Get();
-		log << "\t" << d.Get();
-		log << "\t" << e.Get();
-		log << "\t" << f.Get();
-		log << "\t" << g.Get();
+		for(int ii = 0; ii <= 5; ii++)
+		{
+			log << "\t" << getLimit(ii);
+		}
 	}
 };
 
