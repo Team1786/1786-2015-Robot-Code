@@ -133,8 +133,12 @@ public:
 
 	void LogData()
 	{
-		timeval tm;
+		static PowerDistributionPanel pdp;	// preparing to read from the pdp
+		static std::vector<CANTalon*> motors;
+
 		static std::ofstream log;
+		timeval tm;
+
 		if (!log.is_open())
 		{
 			// writing to /home/lvuser/logs/[unixtime].log
@@ -145,18 +149,22 @@ public:
 				log << "pdpChannel " << i << " current\t";
 			}
 			log << "FrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
+			motors.push_back(&frontLeft);
 			log << "\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature";
+			motors.push_back(&frontRight);
 			log << "\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature";
+			motors.push_back(&rearLeft);
 			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
-			log << "\tJoystic X\tJoystic Y\tJoystick Twist";
+			motors.push_back(&rearRight);
 			log << "\tWinch Bus Voltage\tWinch Output Current\tWinch Output Voltage\tWinch Temperature";
+			motors.push_back(&winch);
 			log << "\tGripper Bus Voltage\tGripper Output Current\tGripper Output Voltage\tGripper Temperature";
 			log << "\tWinch Tension\t Winch a\t Winch b\t Winch c\t Winch d\t Winch e\t Winch f\t Winch g";
+			motors.push_back(&gripper);
 			log << std::endl;
 		}
 		gettimeofday(&tm, NULL);
 		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000;
-		PowerDistributionPanel pdp;	// preparing to read from the pdp
 		// Some general information
 		log << "\t" << pdp.GetVoltage();
 		log << "\t" << pdp.GetTemperature();
@@ -166,39 +174,21 @@ public:
 		{
 			log << "\t" << pdp.GetCurrent(i);
 		}
-		//Talon Data: drivetrain
-		log << "\t" <<frontLeft.GetBusVoltage();
-		log << "\t" <<frontLeft.GetOutputVoltage();
-		log << "\t" <<frontLeft.GetOutputCurrent();
-		log << "\t" <<frontLeft.GetTemperature();
-		log << "\t" <<frontRight.GetBusVoltage();
-		log << "\t" <<frontRight.GetOutputVoltage();
-		log << "\t" <<frontRight.GetOutputCurrent();
-		log << "\t" <<frontRight.GetTemperature();
-		log << "\t" <<rearLeft.GetBusVoltage();
-		log << "\t" <<rearLeft.GetOutputVoltage();
-		log << "\t" <<rearLeft.GetOutputCurrent();
-		log << "\t" <<rearLeft.GetTemperature();
-		log << "\t" <<rearRight.GetBusVoltage();
-		log << "\t" <<rearRight.GetOutputVoltage();
-		log << "\t" <<rearRight.GetOutputCurrent();
-		log << "\t" <<rearRight.GetTemperature();
 		
+		//Talon Data
+		for(int ii = 0; ii < motors.size(); ii++)
+		{
+			log << "\t" << motors[ii]->GetBusVoltage();
+			log << "\t" << motors[ii]->GetOutputVoltage();
+			log << "\t" << motors[ii]->GetOutputCurrent();
+			log << "\t" << motors[ii]->GetTemperature();
+		}
+
 		//control data
 		log << "\t" << driveStick.GetX();
 		log << "\t" << driveStick.GetY();
 		log << "\t" << driveStick.GetTwist();
 		log << std::endl;
-		
-		//More Talon Data: winch & gripper
-		log << "\t" <<winch.GetBusVoltage();
-		log << "\t" <<winch.GetOutputVoltage();
-		log << "\t" <<winch.GetOutputCurrent();
-		log << "\t" <<winch.GetTemperature();
-		log << "\t" <<gripper.GetBusVoltage();
-		log << "\t" <<gripper.GetOutputVoltage();
-		log << "\t" <<gripper.GetOutputCurrent();
-		log << "\t" <<gripper.GetTemperature();
 		
 		//Winch Limits
 		log << "\t" << winchTension.Get();
