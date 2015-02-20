@@ -117,9 +117,6 @@ public:
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		float gripperScale = ((1 - lifterStick.GetThrottle()) / 2);
 		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
-
-		//Data logging
-		LogData();
 		
 		//Winching
 		int winchButton=-1;
@@ -129,6 +126,9 @@ public:
 		}
 		updateWinch(winchButton);
 		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270))*gripperScale);
+
+		//Data logging
+		LogData();
 	}
 
 	void LogData()
