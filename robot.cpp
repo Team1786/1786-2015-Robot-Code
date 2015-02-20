@@ -134,6 +134,7 @@ public:
 	void LogData()
 	{
 		static PowerDistributionPanel pdp;	// preparing to read from the pdp
+		static DriverStation* ds = DriverStation::GetInstance();
 		static std::vector<CANTalon*> motors;
 
 		static std::ofstream log;
@@ -203,6 +204,13 @@ public:
 		{
 			log << "\t" << getLimit(ii);
 		}
+
+		//DriverStation Data
+		log << "\t" << ds->GetAlliance();
+		log << "\t" << ds->GetLocation();
+		log << "\t" << ds->GetMatchTime();
+		log << "\t" << ds->IsFMSAttached();
+		log << "\t" << ds->IsSysBrownedOut();
 	}
 };
 
