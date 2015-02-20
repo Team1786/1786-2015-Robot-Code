@@ -1,8 +1,11 @@
 #include "WPILib.h"
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #define AUTO_TARGET 10 //TODO: get a real value for this
+
+#define RAMP_RATE 0.05
 
 class Robot : public IterativeRobot
 {
@@ -163,9 +166,26 @@ public:
 	void TeleopPeriodic()
 	{
 		//Driving
+		static float last[3];
+		static double scaled[3];
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		float gripperScale = ((1 - lifterStick.GetThrottle()) / 2);
-		drivetrain.MecanumDrive_Cartesian(driveStick.GetX()*throttleScale, driveStick.GetY()*throttleScale, driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2));
+
+		scaled[0] = driveStick.GetX()*throttleScale;
+		scaled[1] = driveStick.GetY()*throttleScale;
+		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);		
+
+		last[0] = (std::abs(last[0] - scaled[0]) < RAMP_RATE ? scaled[0] :
+		           scaled[0] > last[0] ? last[0] + RAMP_RATE :
+		           scaled[0] < last[0] ? last[0] - RAMP_RATE : last[0]);
+		last[1] = (std::abs(last[0] - scaled[1]) < RAMP_RATE ? scaled[1] :
+		           scaled[1] > last[1] ? last[1] + RAMP_RATE :
+		           scaled[1] < last[1] ? last[1] - RAMP_RATE : last[1]);
+		last[2] = (std::abs(last[0] - scaled[2]) < RAMP_RATE ? scaled[2] :
+		           scaled[2] > last[2] ? last[2] + RAMP_RATE :
+		           scaled[2] < last[2] ? last[2] - RAMP_RATE : last[2]);
+		drivetrain.MecanumDrive_Cartesian(scaled[0], last[1], last[2]);
+
 		int winchButton=-1;
 		for(int jj=7;jj<=12;jj++)
 		{
