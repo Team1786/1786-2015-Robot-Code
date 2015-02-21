@@ -233,7 +233,6 @@ public:
 		log << "\t" << driveStick.GetX();
 		log << "\t" << driveStick.GetY();
 		log << "\t" << driveStick.GetTwist();
-		log << std::endl;
 		
 		//Winch Limits
 		log << "\t" << winchTension.Get();
@@ -248,6 +247,8 @@ public:
 		log << "\t" << ds->GetMatchTime();
 		log << "\t" << ds->IsFMSAttached();
 		log << "\t" << ds->IsSysBrownedOut();
+
+		log << std::endl;
 	}
 };
 
