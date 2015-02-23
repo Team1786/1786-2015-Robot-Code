@@ -45,7 +45,7 @@ public:
 	bool getLimit(int num)
 	{
 		//invert everything other than top and bottom because the roboRIO reports open as 1
-		//top and bottom are not inverted becuase they they are NC (whereas the rest are NO) 
+		//top and bottom are not inverted becuase they they are NC (whereas the rest are NO)
 		return (num == 0 || num == 5) ? winchLimits[num]->Get() : !winchLimits[num]->Get();
 	}
 
@@ -58,7 +58,7 @@ public:
 		//iterate through all of the limits, and save the last one
 		for(int ii=0;ii<=5;ii++)
 		{
-			if(getLimit(ii)) lastLimit=ii; 
+			if(getLimit(ii)) lastLimit=ii;
 		}
 
 		//check if we have a new target
@@ -141,7 +141,7 @@ public:
 		float gripperScale = ((1 - lifterStick.GetThrottle()) / 2);
 		scaled[0] = driveStick.GetX()*throttleScale;
 		scaled[1] = driveStick.GetY()*throttleScale;
-		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);		
+		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);
 
 		last[0] = (std::abs(last[0] - scaled[0]) < RAMP_RATE ? scaled[0] :
 		           scaled[0] > last[0] ? last[0] + RAMP_RATE :
@@ -153,7 +153,7 @@ public:
 		           scaled[2] > last[2] ? last[2] + RAMP_RATE :
 		           scaled[2] < last[2] ? last[2] - RAMP_RATE : last[2]);
 		drivetrain.MecanumDrive_Cartesian(scaled[0], last[1], last[2]);
-		
+
 		//Winching
 		int winchButton=-1;
 		for(int jj=7;jj<=12;jj++)
@@ -219,7 +219,7 @@ public:
 		{
 			log << "\t" << pdp.GetCurrent(ii);
 		}
-		
+
 		//Talon Data
 		for(int ii = 0; ii < motors.size(); ii++)
 		{
@@ -233,7 +233,7 @@ public:
 		log << "\t" << driveStick.GetX();
 		log << "\t" << driveStick.GetY();
 		log << "\t" << driveStick.GetTwist();
-		
+
 		//Winch Limits
 		log << "\t" << winchTension.Get();
 		for(int ii = 0; ii <= 5; ii++)
