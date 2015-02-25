@@ -13,6 +13,7 @@ private:
 	CANTalon winch, gripper;
 	std::vector<DigitalInput*> winchLimits;
 	DigitalInput a,b,c,d,e,f,g;
+	bool IgnoreLimits;
 
 public:
 	Robot():
@@ -89,7 +90,7 @@ public:
 		}
 
 		//check if we have hit an end stop
-		if(getLimit(0) || getLimit(5))
+		if(getLimit(0) || getLimit(5) && !IgnoreLimits)
 		{
 			if((getLimit(0) && (out < 0))  || (getLimit(5) && (out > 0)))
 			{
@@ -106,11 +107,27 @@ public:
 			winch.Set(out);
 	}
 
+	void updateDashboard()
+	{
+		for(int ii=0;ii<=5;ii++)
+		{
+			SmartDashboard::PutBoolean("Winch " + std::to_string(ii), getLimit(ii));
+		}
+		SmartDashboard::PutBoolean("Winch Tension", winchTension.Get());
+		IgnoreLimits = SmartDashboard::GetBoolean("Ignore Limits", false);
+	}
+
 	void DisabledInit()
 	{
 		drivetrain.SetSafetyEnabled(false);  //disable watchdog
 		//clear winch target
 		updateWinch(-2);
+		SmartDashboard::PutBoolean("Ignore Limits", false);
+	}
+
+	void DisabledPeriodic()
+	{
+		updateDashboard();
 	}
 
 	void TeleopInit()
@@ -134,6 +151,7 @@ public:
 		winchButton = lifterStick.GetRawButton(1) ? -3 : winchButton;
 		updateWinch(winchButton);
 		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270))*gripperScale);
+		updateDashboard();
 	}
 };
 
