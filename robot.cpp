@@ -136,6 +136,12 @@ public:
 		updateWinch(-2);
 	}
 
+	void DisabledPeriodic()
+	{
+		updateDashboard();
+		LogData();
+	}
+
 	void AutonomousPeriodic()
 	{
 		static Timer t;
