@@ -260,6 +260,7 @@ public:
 
 			log << "\tJoystick X\tJoystick Y\tJoystick Twist";
 			log << "\tWinch Tension";
+			log << "\tAlliance\tLocation\tMatch Time\tFMS Attached\tBrowned Out";
 			for(int ii = 0; ii <= 5; ii++)
 			{
 				log << "\t Winch Limit " << ii;
