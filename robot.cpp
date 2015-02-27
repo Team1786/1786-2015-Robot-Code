@@ -1,5 +1,10 @@
 #include "WPILib.h"
+#include <ctime>
 #include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <sys/time.h>
 #include <vector>
 #include <cmath>
 
@@ -18,6 +23,7 @@ private:
 	CANTalon winch, gripper;
 	std::vector<DigitalInput*> winchLimits;
 	DigitalInput a,b,c,d,e,f,g;
+	bool IgnoreLimits;
 
 public:
 	Robot():
@@ -42,7 +48,7 @@ public:
 	bool getLimit(int num)
 	{
 		//invert everything other than top and bottom because the roboRIO reports open as 1
-		//top and bottom are not inverted becuase they they are NC (whereas the rest are NO) 
+		//top and bottom are not inverted becuase they they are NC (whereas the rest are NO)
 		return (num == 0 || num == 5) ? winchLimits[num]->Get() : !winchLimits[num]->Get();
 	}
 
@@ -55,7 +61,7 @@ public:
 		//iterate through all of the limits, and save the last one
 		for(int ii=0;ii<=5;ii++)
 		{
-			if(getLimit(ii)) lastLimit=ii; 
+			if(getLimit(ii)) lastLimit=ii;
 		}
 
 		//check if we have a new target
@@ -94,7 +100,7 @@ public:
 		}
 
 		//check if we have hit an end stop
-		if(getLimit(0) || getLimit(5))
+		if(getLimit(0) || getLimit(5) && !IgnoreLimits)
 		{
 			if((getLimit(0) && (out < 0))  || (getLimit(5) && (out > 0)))
 			{
@@ -110,6 +116,17 @@ public:
 		else
 			winch.Set(out);
 		return (target == -1);
+	}
+
+	void updateDashboard()
+	{
+		for(int ii=0;ii<=5;ii++)
+		{
+			SmartDashboard::PutBoolean("Winch " + std::to_string(ii), getLimit(ii));
+		}
+		SmartDashboard::PutBoolean("Winch Tension", winchTension.Get());
+		IgnoreLimits = SmartDashboard::GetBoolean("Ignore Limits", false);
+		SmartDashboard::PutBoolean("Ignore Limits", false);
 	}
 
 	void DisabledInit()
@@ -153,6 +170,8 @@ public:
 		case 4:
 			gripper.Set(-1);
 			break;
+			updateDashboard();
+			LogData();
 		}
 	}
 
@@ -173,7 +192,7 @@ public:
 
 		scaled[0] = driveStick.GetX()*throttleScale;
 		scaled[1] = driveStick.GetY()*throttleScale;
-		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);		
+		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);
 
 		last[0] = (std::abs(last[0] - scaled[0]) < RAMP_RATE ? scaled[0] :
 		           scaled[0] > last[0] ? last[0] + RAMP_RATE :
@@ -186,6 +205,7 @@ public:
 		           scaled[2] < last[2] ? last[2] - RAMP_RATE : last[2]);
 		drivetrain.MecanumDrive_Cartesian(scaled[0], last[1], last[2]);
 
+		//Winching
 		int winchButton=-1;
 		for(int jj=7;jj<=12;jj++)
 		{
@@ -194,6 +214,93 @@ public:
 		winchButton = lifterStick.GetRawButton(1) ? -3 : winchButton;
 		updateWinch(winchButton);
 		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270))*gripperScale);
+
+		updateDashboard();
+		//Data logging
+		LogData();
+	}
+
+	void LogData()
+	{
+		static PowerDistributionPanel pdp;	// preparing to read from the pdp
+		static DriverStation* ds = DriverStation::GetInstance();
+		static std::vector<CANTalon*> motors;
+
+		static std::ofstream log;
+		timeval tm;
+
+		if (!log.is_open())
+		{
+			// writing to /home/lvuser/logs/[unixtime].log
+			log.open("/home/lvuser/logs/" + std::to_string(time(0)) +".csv");
+			log << "Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t";
+			for (int ii = 0; ii < 16; ii++)
+			{
+				log << "pdpChannel " << ii << " current\t";
+			}
+
+			log << "FrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
+			motors.push_back(&frontLeft);
+			log << "\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature";
+			motors.push_back(&frontRight);
+			log << "\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature";
+			motors.push_back(&rearLeft);
+			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
+			motors.push_back(&rearRight);
+			log << "\tWinch Bus Voltage\tWinch Output Current\tWinch Output Voltage\tWinch Temperature";
+			motors.push_back(&winch);
+			log << "\tGripper Bus Voltage\tGripper Output Current\tGripper Output Voltage\tGripper Temperature";
+			motors.push_back(&gripper);
+
+			log << "\tJoystick X\tJoystick Y\tJoystick Twist";
+			log << "\tWinch Tension";
+			for(int ii = 0; ii <= 5; ii++)
+			{
+				log << "\t Winch Limit " << ii;
+			}
+			log << std::endl;
+		}
+		gettimeofday(&tm, NULL);
+		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000;
+		// Some general information
+		log << "\t" << pdp.GetVoltage();
+		log << "\t" << pdp.GetTemperature();
+		log << "\t" << pdp.GetTotalCurrent();
+		// current on each channel
+		for (int ii = 0; ii < 16; ii++)
+		{
+			log << "\t" << pdp.GetCurrent(ii);
+		}
+
+		//Talon Data
+		for(int ii = 0; ii < motors.size(); ii++)
+		{
+			log << "\t" << motors[ii]->GetBusVoltage();
+			log << "\t" << motors[ii]->GetOutputVoltage();
+			log << "\t" << motors[ii]->GetOutputCurrent();
+			log << "\t" << motors[ii]->GetTemperature();
+		}
+
+		//control data
+		log << "\t" << driveStick.GetX();
+		log << "\t" << driveStick.GetY();
+		log << "\t" << driveStick.GetTwist();
+
+		//Winch Limits
+		log << "\t" << winchTension.Get();
+		for(int ii = 0; ii <= 5; ii++)
+		{
+			log << "\t" << getLimit(ii);
+		}
+
+		//DriverStation Data
+		log << "\t" << ds->GetAlliance();
+		log << "\t" << ds->GetLocation();
+		log << "\t" << ds->GetMatchTime();
+		log << "\t" << ds->IsFMSAttached();
+		log << "\t" << ds->IsSysBrownedOut();
+
+		log << std::endl;
 	}
 };
 
