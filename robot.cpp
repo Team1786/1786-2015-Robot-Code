@@ -238,7 +238,7 @@ public:
 		if (!log.is_open())
 		{
 			// writing to /home/lvuser/logs/[unixtime].log
-			log.open("/home/lvuser/logs/" + std::to_string(time(0)) +".csv");
+			log.open("/media/sda1/logs/" + std::to_string(time(0)) +".csv");
 			log << "Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t";
 			for (int ii = 0; ii < 16; ii++)
 			{
