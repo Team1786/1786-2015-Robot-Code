@@ -8,7 +8,7 @@
 #include <vector>
 #include <cmath>
 
-#define AUTO_TARGET 10 //TODO: get a real value for this
+#define AUTO_TARGET 1 //TODO: get a real value for this
 
 #define RAMP_RATE 0.05
 
@@ -161,7 +161,7 @@ public:
 			//check if we are at our destination distance
 			if(t.Get() < AUTO_TARGET)
 			{
-				drivetrain.MecanumDrive_Cartesian(0, -0.2, 0); //drive forwards
+				drivetrain.MecanumDrive_Cartesian(0, -0.5, 0); //drive forwards
 				std::cout << "time: " << t.Get() << std::endl;
 			}
 			else
