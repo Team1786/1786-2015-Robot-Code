@@ -203,10 +203,10 @@ public:
 		last[0] = (std::abs(last[0] - scaled[0]) < RAMP_RATE ? scaled[0] :
 		           scaled[0] > last[0] ? last[0] + RAMP_RATE :
 		           scaled[0] < last[0] ? last[0] - RAMP_RATE : last[0]);
-		last[1] = (std::abs(last[0] - scaled[1]) < RAMP_RATE ? scaled[1] :
+		last[1] = (std::abs(last[1] - scaled[1]) < RAMP_RATE ? scaled[1] :
 		           scaled[1] > last[1] ? last[1] + RAMP_RATE :
 		           scaled[1] < last[1] ? last[1] - RAMP_RATE : last[1]);
-		last[2] = (std::abs(last[0] - scaled[2]) < RAMP_RATE ? scaled[2] :
+		last[2] = (std::abs(last[2] - scaled[2]) < RAMP_RATE ? scaled[2] :
 		           scaled[2] > last[2] ? last[2] + RAMP_RATE :
 		           scaled[2] < last[2] ? last[2] - RAMP_RATE : last[2]);
 		drivetrain.MecanumDrive_Cartesian(scaled[0], last[1], last[2]);
