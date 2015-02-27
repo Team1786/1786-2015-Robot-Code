@@ -72,7 +72,7 @@ public:
 		if(t == -3) target=-3;
 
 		//if the stick is not being used, and we have a target, turn on the motor
-		if(abs(lifterStick.GetY()) < 0.01 && target != -1)
+		if(std::abs(lifterStick.GetY()) < 0.01 && target != -1)
 		{
 			if(target == -3)
 			{
