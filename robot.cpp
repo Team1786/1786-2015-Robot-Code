@@ -76,7 +76,7 @@ public:
 		{
 			if(target == -3)
 			{
-				if(winchTension.Get()) //check for tension
+				if(winchTension.Get() && !getLimit(0)) //check for tension
 					out = 1; //go down
 				else
 				{
@@ -171,7 +171,7 @@ public:
 			}
 			break;
 		case 3:
-			stage += updateWinch(0);
+			stage += updateWinch(-3);
 			break;
 		case 4:
 			gripper.Set(-1);
