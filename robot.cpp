@@ -196,7 +196,7 @@ public:
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		float gripperScale = ((1 - lifterStick.GetThrottle()) / 2);
 
-		scaled[0] = driveStick.GetX()*throttleScale;
+		scaled[0] = (driveStick.GetX() + -(driveStick.GetPOV() == 90) + (driveStick.GetPOV() == 270))*throttleScale;
 		scaled[1] = driveStick.GetY()*throttleScale;
 		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);
 
