@@ -8,7 +8,7 @@
 #include <vector>
 #include <cmath>
 
-#define AUTO_TARGET 1 //TODO: get a real value for this
+#define AUTO_TARGET 2.2 //TODO: get a real value for this
 
 #define RAMP_RATE 0.05
 
