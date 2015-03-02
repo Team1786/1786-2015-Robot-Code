@@ -176,9 +176,9 @@ public:
 		case 4:
 			gripper.Set(-1);
 			break;
-			updateDashboard();
-			LogData();
 		}
+		updateDashboard();
+		LogData();
 	}
 
 	void TeleopInit()
