@@ -181,6 +181,131 @@ public:
 		LogData();
 	}
 
+	void TestPeriodic()
+	{
+		static Timer t;
+		static short stage = 0;
+		if(!t.Get()) t.Start();
+		switch(stage)
+		{
+		case 0:
+			//drive forwards for 5 seconds
+			const int target = 5;
+			if(t.Get() < target) drivetrain.MecanumDrive_Cartesian(0, 1, 0);
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				t.Reset();
+				stage++;
+			}
+			break;
+		case 1:
+			//drive backwards for 5 seconds
+			const int target = 5;
+			if(t.Get() < target) drivetrain.MecanumDrive_Cartesian(0, -1, 0);
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				t.Reset();
+				stage++;
+			}
+			break;
+		case 2:
+			//drive left for 5 seconds
+			const int target = 5;
+			if(t.Get() < target) drivetrain.MecanumDrive_Cartesian(-1, 0, 0);
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				t.Reset();
+				stage++;
+			}
+			break;
+		case 3:
+			//drive right for 5 seconds
+			const int target = 5;
+			if(t.Get() < target) drivetrain.MecanumDrive_Cartesian(-1, 0, 0);
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				t.Reset();
+				stage++;
+			}
+			break;
+		case 4:
+			//rotate left (CC) for 5 seconds
+			const int target = 5;
+			if(t.Get() < target) drivetrain.MecanumDrive_Cartesian(0, 0, -1);
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				t.Reset();
+				stage++;
+			}
+			break;
+		case 5:
+			//rotate right (C) for 5 seconds
+			const int target = 5;
+			if(t.Get() < target) drivetrain.MecanumDrive_Cartesian(0, 0, 1);
+			else
+			{
+				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				t.Reset();
+				stage++;
+			}
+			break;
+		case 6:
+			//winch down to level 0
+			stage += updateWinch(0);
+			break;
+		case 7:
+			//winch up to level 1
+			stage += updateWinch(1);
+			break;
+		case 8:
+			//winch up to level 2
+			stage += updateWinch(2);
+			break;
+		case 9:
+			//winch up to level 3
+			stage += updateWinch(3);
+			break;
+		case 10:
+			//winch up to level 4
+			stage += updateWinch(4);
+			break;
+		case 11:
+			//winch up to level 5
+			stage += updateWinch(5);
+			break;
+		case 12:
+			//grip to inner limit
+			if(!gripper.GetForwardLimitOK()) gripper.Set(1);
+			else
+			{
+				gripper.Set(0);
+				stage++;
+			}
+			break;
+		case 12:
+			//grip to inner limit
+			if(!gripper.GetReverseLimitOK()) gripper.Set(-1);
+			else
+			{
+				gripper.Set(0);
+				stage++;
+			}
+			break;
+		default:
+			drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+			lifter.Set(0);
+			gripper.Set(0);
+			break;
+		}
+		updateDashboard();
+		LogData();
+	}
+
 	void TeleopInit()
 	{
 		printf("Starting Teleop mode");
