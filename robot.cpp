@@ -124,8 +124,8 @@ private:
 		if (!logA.is_open() || !logB.is_open())
 		{
 			// writing to /home/lvuser/logs/[unixtime].log
-			logA.open("/media/sda1/logs/" + std::to_string(time(0)) +".csv");
-			logB.open("/media/sdb1/logs/" + std::to_string(time(0)) +".csv");
+			logA.open("/media/sda1/logs/log" + std::to_string(time(0)) +".csv");
+			logB.open("/media/sdb1/logs/log" + std::to_string(time(0)) +".csv");
 			LOG("Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t");
 			for (int ii = 0; ii < 16; ii++)
 			{
