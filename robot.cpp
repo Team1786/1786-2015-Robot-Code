@@ -12,6 +12,8 @@
 
 #define RAMP_RATE 0.05
 
+#define LOG(X) logA << X; logB << X
+
 class Robot : public IterativeRobot
 {
 private:
@@ -116,85 +118,86 @@ private:
 		static DriverStation* ds = DriverStation::GetInstance();
 		static std::vector<CANTalon*> motors;
 
-		static std::ofstream log;
+		static std::ofstream logA, logB;
 		timeval tm;
 
-		if (!log.is_open())
+		if (!logA.is_open() || !logB.is_open())
 		{
 			// writing to /home/lvuser/logs/[unixtime].log
-			log.open("/media/sda1/logs/" + std::to_string(time(0)) +".csv");
-			log << "Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t";
+			logA.open("/media/sda1/logs/" + std::to_string(time(0)) +".csv");
+			logB.open("/media/sdb1/logs/" + std::to_string(time(0)) +".csv");
+			LOG("Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t");
 			for (int ii = 0; ii < 16; ii++)
 			{
-				log << "pdpChannel " << ii << " current\t";
+				LOG("pdpChannel " << ii << " current\t");
 			}
 
-			log << "FrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature";
+			LOG("FrontLeft Bus Voltage\tFrontLeft Output Current\tFrontLeft Output Voltage\tFrontLeft Temperature");
 			motors.push_back(&frontLeft);
-			log << "\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature";
+			LOG("\tFrontRight Bus Voltage\tFrontRight Output Current\tFrontRight Output Voltage\tFrontRight Temperature");
 			motors.push_back(&frontRight);
-			log << "\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature";
+			LOG("\tRearLeft Bus Voltage\tRearLeft Output Current\tRearLeft Output Voltage\tRearLeft Temperature");
 			motors.push_back(&rearLeft);
-			log << "\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature";
+			LOG("\tRearRight Bus Voltage\tRearRight Output Current\tRearRight Output Voltage\tRearRight Temperature");
 			motors.push_back(&rearRight);
-			log << "\tWinch Bus Voltage\tWinch Output Current\tWinch Output Voltage\tWinch Temperature";
+			LOG("\tWinch Bus Voltage\tWinch Output Current\tWinch Output Voltage\tWinch Temperature");
 			motors.push_back(&winch);
-			log << "\tGripper Bus Voltage\tGripper Output Current\tGripper Output Voltage\tGripper Temperature";
+			LOG("\tGripper Bus Voltage\tGripper Output Current\tGripper Output Voltage\tGripper Temperature");
 			motors.push_back(&gripper);
 
-			log << "\tJoystick X\tJoystick Y\tJoystick Twist";
-			log << "\tWinch Tension";
+			LOG("\tJoystick X\tJoystick Y\tJoystick Twist");
+			LOG("\tWinch Tension");
 			for(int ii = 0; ii <= 5; ii++)
 			{
-				log << "\t Winch Limit " << ii;
+				LOG("\t Winch Limit " << ii);
 			}
-			log << std::endl;
-			log << "\tAlliance\tLocation\tMatch Time\tFMS Attached\tBrowned Out";
-			log << "\tTestStage";
+			LOG(std::endl);
+			LOG("\tAlliance\tLocation\tMatch Time\tFMS Attached\tBrowned Out");
+			LOG("\tTestStage");
 		}
 		gettimeofday(&tm, NULL);
-		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000;
+		LOG(time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000);
 		// Some general information
-		log << "\t" << pdp.GetVoltage();
-		log << "\t" << pdp.GetTemperature();
-		log << "\t" << pdp.GetTotalCurrent();
+		LOG("\t" << pdp.GetVoltage());
+		LOG("\t" << pdp.GetTemperature());
+		LOG("\t" << pdp.GetTotalCurrent());
 		// current on each channel
 		for (int ii = 0; ii < 16; ii++)
 		{
-			log << "\t" << pdp.GetCurrent(ii);
+			LOG("\t" << pdp.GetCurrent(ii));
 		}
 
 		//Talon Data
 		for(int ii = 0; ii < motors.size(); ii++)
 		{
-			log << "\t" << motors[ii]->GetBusVoltage();
-			log << "\t" << motors[ii]->GetOutputVoltage();
-			log << "\t" << motors[ii]->GetOutputCurrent();
-			log << "\t" << motors[ii]->GetTemperature();
+			LOG("\t" << motors[ii]->GetBusVoltage());
+			LOG("\t" << motors[ii]->GetOutputVoltage());
+			LOG("\t" << motors[ii]->GetOutputCurrent());
+			LOG("\t" << motors[ii]->GetTemperature());
 		}
 
 		//control data
-		log << "\t" << driveStick.GetX();
-		log << "\t" << driveStick.GetY();
-		log << "\t" << driveStick.GetTwist();
+		LOG("\t" << driveStick.GetX());
+		LOG("\t" << driveStick.GetY());
+		LOG("\t" << driveStick.GetTwist());
 
 		//Winch Limits
-		log << "\t" << winchTension.Get();
+		LOG("\t" << winchTension.Get());
 		for(int ii = 0; ii <= 5; ii++)
 		{
-			log << "\t" << getLimit(ii);
+			LOG("\t" << getLimit(ii));
 		}
 
 		//DriverStation Data
-		log << "\t" << ds->GetAlliance();
-		log << "\t" << ds->GetLocation();
-		log << "\t" << ds->GetMatchTime();
-		log << "\t" << ds->IsFMSAttached();
-		log << "\t" << ds->IsSysBrownedOut();
+		LOG("\t" << ds->GetAlliance());
+		LOG("\t" << ds->GetLocation());
+		LOG("\t" << ds->GetMatchTime());
+		LOG("\t" << ds->IsFMSAttached());
+		LOG("\t" << ds->IsSysBrownedOut());
 
 		//Test stage
-		log << "\t" << stage;
-		log << std::endl;
+		LOG("\t" << stage);
+		LOG(std::endl);
 	}
 
 public:
