@@ -24,6 +24,7 @@ private:
 	std::vector<DigitalInput*> winchLimits;
 	DigitalInput a,b,c,d,e,f,g;
 	bool IgnoreLimits;
+	short stage=0;
 
 	bool getLimit(int num)
 	{
@@ -149,6 +150,7 @@ private:
 			}
 			log << std::endl;
 			log << "\tAlliance\tLocation\tMatch Time\tFMS Attached\tBrowned Out";
+			log << "\tTestStage";
 		}
 		gettimeofday(&tm, NULL);
 		log << time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000;
@@ -190,6 +192,8 @@ private:
 		log << "\t" << ds->IsFMSAttached();
 		log << "\t" << ds->IsSysBrownedOut();
 
+		//Test stage
+		log << "\t" << stage;
 		log << std::endl;
 	}
 
@@ -214,6 +218,7 @@ public:
 	}
 	void DisabledInit()
 	{
+		stage=0;
 		drivetrain.SetSafetyEnabled(false);  //disable watchdog
 		//clear winch target
 		updateWinch(-2);
@@ -268,7 +273,6 @@ public:
 	{
 		static Timer t;
 		static short oldStage = -1;
-		static short stage = 0;
 		int timePerAction = 5;
 		float testSpeed = 0.3;
 
