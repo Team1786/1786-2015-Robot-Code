@@ -151,9 +151,9 @@ private:
 			{
 				LOG("\t Winch Limit " << ii);
 			}
-			LOG(std::endl);
 			LOG("\tAlliance\tLocation\tMatch Time\tFMS Attached\tBrowned Out");
 			LOG("\tTestStage");
+			LOG(std::endl);
 		}
 		gettimeofday(&tm, NULL);
 		LOG(time(0) << '.' << std::setfill('0') << std::setw(3) << tm.tv_usec/1000);
