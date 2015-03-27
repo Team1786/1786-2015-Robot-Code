@@ -236,15 +236,15 @@ public:
 	void AutonomousPeriodic()
 	{
 		static Timer t;
-		static short stage = 0;
-		switch(stage)
+		static short autoStage = 0;
+		switch(autoStage)
 		{
 		case 0:
 			//TODO: grip grippers
-			stage += 1;
+			autoStage += 1;
 			break;
 		case 1:
-			stage += updateWinch(1);
+			autoStage += updateWinch(1);
 			break;
 		case 2:
 			if(!t.Get())
@@ -258,11 +258,11 @@ public:
 			else
 			{
 				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
-				stage += 1;
+				autoStage += 1;
 			}
 			break;
 		case 3:
-			stage += updateWinch(-3);
+			autoStage += updateWinch(-3);
 			break;
 		case 4:
 			gripper.Set(-1);
