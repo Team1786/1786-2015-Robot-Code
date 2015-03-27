@@ -124,15 +124,24 @@ private:
 		SmartDashboard::PutBoolean("log A", logA.is_open());
 		SmartDashboard::PutBoolean("log B", logB.is_open());
 		SmartDashboard::PutBoolean("log C", logC.is_open());
+
 		if (!logA.is_open() && !logB.is_open() && !logC.is_open())
 		{
+			std::fstream logNumFile;
+			int logNum;
+			logNumFile.open("/home/lvuser/logNum");
+			logNumFile >> logNum;
+			logNum++;
+			logNumFile.seekp(0);
+			logNumFile << logNum;
 			// writing to /home/lvuser/logs/[unixtime].log
-			logA.open("/media/sda1/logs/log" + std::to_string(time(0)) +".csv");
+			logA.open("/media/sda1/logs/log" + std::to_string(logNum) + ".csv");
 			std::cerr << (logA.is_open() ? "Opened" : "Failed to open") << "log A." << std::endl;
-			logB.open("/media/sdb1/logs/log" + std::to_string(time(0)) +".csv");
+			logB.open("/media/sdb1/logs/log" + std::to_string(logNum) + ".csv");
 			std::cerr << (logB.is_open() ? "Opened" : "Failed to open") << "log B." << std::endl;
-			logC.open("/home/lvuser/logs/log" + std::to_string(time(0)) +".csv");
+			logC.open("/home/lvuser/logs/log" + std::to_string(logNum) + ".csv");
 			std::cerr << (logC.is_open() ? "Opened" : "Failed to open") << "log C." << std::endl;
+
 			LOG("Time\tpdpInput voltage\tpdpTemperature\tpdpTotal Current\t");
 			for (int ii = 0; ii < 16; ii++)
 			{
