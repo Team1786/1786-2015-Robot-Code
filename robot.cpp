@@ -26,7 +26,7 @@ private:
 	std::vector<DigitalInput*> winchLimits;
 	DigitalInput a,b,c,d,e,f,g;
 	bool IgnoreLimits;
-	short stage=0;
+	short stage;
 
 	bool getLimit(int num)
 	{
