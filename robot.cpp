@@ -386,7 +386,8 @@ public:
 				break;
 			case 14:
 				//grip to inner limit
-				if(gripper.GetForwardLimitOK()) gripper.Set(testSpeed);
+				//if(gripper.GetForwardLimitOK()) gripper.Set(testSpeed);
+				if(true);
 				else
 				{
 					gripper.Set(0);
