@@ -25,7 +25,7 @@ private:
 	CANTalon winch, gripper;
 	std::vector<DigitalInput*> winchLimits;
 	DigitalInput a,b,c,d,e,f,g;
-	bool IgnoreLimits;
+	bool IgnoreLimits, autoMode;
 	short stage;
 
 	bool getLimit(int num)
@@ -111,6 +111,8 @@ private:
 		SmartDashboard::PutBoolean("Winch Tension", winchTension.Get());
 		IgnoreLimits = SmartDashboard::GetBoolean("Ignore Limits", false);
 		SmartDashboard::PutBoolean("Ignore Limits", IgnoreLimits);
+		autoMode = SmartDashboard::GetBoolean("1519 Mode", false);
+		SmartDashboard::PutBoolean("1519 Mode", autoMode);
 	}
 
 	void LogData()
@@ -254,36 +256,64 @@ public:
 	{
 		static Timer t;
 		static short autoStage = 0;
-		switch(autoStage)
+		if(!autoMode)
 		{
-		case 0:
-			//TODO: grip grippers
-			autoStage += 1;
-			break;
-		case 1:
-			autoStage += updateWinch(1);
-			break;
-		case 2:
-			if(!t.Get())
-				t.Start();
-			//check if we are at our destination distance
-			if(t.Get() < AUTO_TARGET)
+			switch(autoStage)
 			{
-				drivetrain.MecanumDrive_Cartesian(0, -0.5, 0); //drive forwards
-				std::cout << "time: " << t.Get() << std::endl;
+			case 0:
+				//TODO: grip grippers
+				autoStage++;
+				break;
+			case 1:
+				autoStage += updateWinch(1);
+				break;
+			case 2:
+				if(!t.Get())
+					t.Start();
+				//check if we are at our destination distance
+				if(t.Get() < AUTO_TARGET)
+				{
+					drivetrain.MecanumDrive_Cartesian(0, -0.5, 0); //drive forwards
+					std::cout << "time: " << t.Get() << std::endl;
+				}
+				else
+				{
+					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					autoStage++;
+				}
+				break;
+			case 3:
+				autoStage += updateWinch(-3);
+				break;
+			case 4:
+				gripper.Set(-1);
+				break;
 			}
-			else
+		}
+		else
+		{
+			switch(autoStage)
 			{
-				drivetrain.MecanumDrive_Cartesian(0, 0, 0);
-				autoStage += 1;
+			case 0:
+				if(!t.Get()) t.Start();
+				if(t.Get() < 3) drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+				else
+				{
+					autoStage++;
+					t.Stop();
+					t.Reset();
+				}
+				break;
+			case 1:
+				if(!t.Get()) t.Start();
+				if(t.Get() < 1.2) drivetrain.MecanumDrive_Cartesian(0, -0.5, 0);
+				else
+				{
+					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					autoStage++;
+				}
+				break;
 			}
-			break;
-		case 3:
-			autoStage += updateWinch(-3);
-			break;
-		case 4:
-			gripper.Set(-1);
-			break;
 		}
 		updateDashboard();
 		LogData();
