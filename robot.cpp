@@ -495,7 +495,7 @@ public:
 
 		scaled[0] = (driveStick.GetX() + -(driveStick.GetPOV() == 90) + (driveStick.GetPOV() == 270)) * throttleScale;
 		scaled[1] = driveStick.GetY() * throttleScale;
-		scaled[2] = driveStick.GetTwist() * throttleScale * driveStick.GetRawButton(2) * 0.8;
+		scaled[2] = driveStick.GetTwist() * throttleScale * (driveStick.GetRawButton(2) || driveStick.GetRawButton(3)) * (1 - (0.5 * !driveStick.GetRawButton(3)));
 
 		drivetrain.MecanumDrive_Cartesian(scaled[0], scaled[1], scaled[2]);
 
