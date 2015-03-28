@@ -103,6 +103,7 @@ private:
 
 	void updateDashboard()
 	{
+		LiveWindow::GetInstance()->SetEnabled(false);
 		for(int ii = 0;ii <= 5;ii++)
 		{
 			SmartDashboard::PutBoolean("Winch " + std::to_string(ii), getLimit(ii));
