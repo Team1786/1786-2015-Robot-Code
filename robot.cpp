@@ -326,16 +326,12 @@ public:
 		int timePerAction = 5;
 		float testSpeed = 0.3;
 
-		if(oldStage != stage)
-		{
-			if(driveStick.GetRawButton(1))
-			{
-				oldStage = stage;
-				if(!t.Get()) t.Start();
-			}
+		if(oldStage != stage){
+			if(driveStick.GetRawButton(1)) oldStage = stage;
 		}
 		else
 		{
+			if(!t.Get()) t.Start();
 			switch(stage)
 			{
 			case 0:
@@ -345,6 +341,7 @@ public:
 				else
 				{
 					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					t.Stop();
 					t.Reset();
 					stage++;
 				}
@@ -356,6 +353,7 @@ public:
 				else
 				{
 					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					t.Stop();
 					t.Reset();
 					stage++;
 				}
@@ -367,6 +365,7 @@ public:
 				else
 				{
 					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					t.Stop();
 					t.Reset();
 					stage++;
 				}
@@ -378,6 +377,7 @@ public:
 				else
 				{
 					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					t.Stop();
 					t.Reset();
 					stage++;
 				}
@@ -389,6 +389,7 @@ public:
 				else
 				{
 					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					t.Stop();
 					t.Reset();
 					stage++;
 				}
@@ -400,6 +401,7 @@ public:
 				else
 				{
 					drivetrain.MecanumDrive_Cartesian(0, 0, 0);
+					t.Stop();
 					t.Reset();
 					stage++;
 				}
