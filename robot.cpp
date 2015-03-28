@@ -113,6 +113,8 @@ private:
 		SmartDashboard::PutBoolean("Ignore Limits", IgnoreLimits);
 		autoMode = SmartDashboard::GetBoolean("1519 Mode", false);
 		SmartDashboard::PutBoolean("1519 Mode", autoMode);
+		SmartDashboard::PutBoolean("Gripper inside", gripper.IsFwdLimitSwitchClosed());
+		SmartDashboard::PutBoolean("Gripper outside", gripper.IsRevLimitSwitchClosed());
 	}
 
 	void LogData()
