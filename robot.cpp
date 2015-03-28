@@ -109,7 +109,7 @@ private:
 		}
 		SmartDashboard::PutBoolean("Winch Tension", winchTension.Get());
 		IgnoreLimits = SmartDashboard::GetBoolean("Ignore Limits", false);
-		SmartDashboard::PutBoolean("Ignore Limits", false);
+		SmartDashboard::PutBoolean("Ignore Limits", IgnoreLimits);
 	}
 
 	void LogData()
