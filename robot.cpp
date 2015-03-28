@@ -333,7 +333,6 @@ public:
 				oldStage = stage;
 				if(!t.Get()) t.Start();
 			}
-			else SmartDashboard::PutString("Test Status", "Press driveStick trigger to continue...");
 		}
 		else
 		{
@@ -341,6 +340,7 @@ public:
 			{
 			case 0:
 				//drive forwards for 5 seconds
+				SmartDashboard::PutString("Test Status", "driving forwards for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, -testSpeed, 0);
 				else
 				{
@@ -351,6 +351,7 @@ public:
 				break;
 			case 1:
 				//drive backwards for 5 seconds
+				SmartDashboard::PutString("Test Status", "driving backwards for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, testSpeed, 0);
 				else
 				{
@@ -361,6 +362,7 @@ public:
 				break;
 			case 2:
 				//drive left for 5 seconds
+				SmartDashboard::PutString("Test Status", "strafing left for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(-testSpeed, 0, 0);
 				else
 				{
@@ -371,6 +373,7 @@ public:
 				break;
 			case 3:
 				//drive right for 5 seconds
+				SmartDashboard::PutString("Test Status", "strafing right for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(testSpeed, 0, 0);
 				else
 				{
@@ -380,6 +383,7 @@ public:
 				}
 				break;
 			case 4:
+				SmartDashboard::PutString("Test Status", "rotating left (CC) for 5 seconds");
 				//rotate left (CC) for 5 seconds
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, 0, -testSpeed);
 				else
@@ -390,6 +394,7 @@ public:
 				}
 				break;
 			case 5:
+				SmartDashboard::PutString("Test Status", "rotate right (C) for 5 seconds");
 				//rotate right (C) for 5 seconds
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, 0, testSpeed);
 				else
@@ -400,38 +405,47 @@ public:
 				}
 				break;
 			case 6:
+				SmartDashboard::PutString("Test Status", "winch level 0");
 				//winch down to level 0
 				stage += updateWinch(0);
 				break;
 			case 7:
+				SmartDashboard::PutString("Test Status", "winch level 1");
 				//winch up to level 1
 				stage += updateWinch(1);
 				break;
 			case 8:
+				SmartDashboard::PutString("Test Status", "winch level 2");
 				//winch up to level 2
 				stage += updateWinch(2);
 				break;
 			case 9:
+				SmartDashboard::PutString("Test Status", "winch level 3");
 				//winch up to level 3
 				stage += updateWinch(3);
 				break;
 			case 10:
+				SmartDashboard::PutString("Test Status", "winch level 4");
 				//winch up to level 4
 				stage += updateWinch(4);
 				break;
 			case 11:
+				SmartDashboard::PutString("Test Status", "winch level 5");
 				//winch up to level 5
 				stage += updateWinch(5);
 				break;
 			case 12:
+				SmartDashboard::PutString("Test Status", "winch tension");
 				//test winch set down
 				stage += updateWinch(-3);
 				break;
 			case 13:
+				SmartDashboard::PutString("Test Status", "winch level 0");
 				//winch down to level 0
 				stage += updateWinch(0);
 				break;
 			case 14:
+				SmartDashboard::PutString("Test Status", "gripper inner limit");
 				//grip to inner limit
 				//if(gripper.GetForwardLimitOK()) gripper.Set(testSpeed);
 				if(true);
@@ -442,7 +456,8 @@ public:
 				}
 				break;
 			case 15:
-				//grip to inner limit
+				SmartDashboard::PutString("Test Status", "gripper outer limit");
+				//grip to outer limit
 				if(gripper.GetReverseLimitOK()) gripper.Set(-testSpeed);
 				else
 				{
