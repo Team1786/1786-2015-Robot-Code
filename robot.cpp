@@ -327,16 +327,20 @@ public:
 		static short oldStage = -1;
 		int timePerAction = 5;
 		float testSpeed = 0.3;
+		static bool skipCheck;
 
-		if(oldStage != stage){
+		if(oldStage != stage && !skipCheck){
 			if(driveStick.GetRawButton(1)) oldStage = stage;
+			skipCheck=false;
 		}
 		else
 		{
+			skipCheck=false;
 			if(!t.Get()) t.Start();
 			switch(stage)
 			{
 			case 0:
+				skipCheck=true;
 				//drive forwards for 5 seconds
 				SmartDashboard::PutString("Test Status", "driving forwards for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, -testSpeed, 0);
@@ -349,6 +353,7 @@ public:
 				}
 				break;
 			case 1:
+				skipCheck=true;
 				//drive backwards for 5 seconds
 				SmartDashboard::PutString("Test Status", "driving backwards for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, testSpeed, 0);
@@ -361,6 +366,7 @@ public:
 				}
 				break;
 			case 2:
+				skipCheck=true;
 				//drive left for 5 seconds
 				SmartDashboard::PutString("Test Status", "strafing left for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(-testSpeed, 0, 0);
@@ -373,6 +379,7 @@ public:
 				}
 				break;
 			case 3:
+				skipCheck=true;
 				//drive right for 5 seconds
 				SmartDashboard::PutString("Test Status", "strafing right for 5 seconds");
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(testSpeed, 0, 0);
@@ -385,6 +392,7 @@ public:
 				}
 				break;
 			case 4:
+				skipCheck=true;
 				SmartDashboard::PutString("Test Status", "rotating left (CC) for 5 seconds");
 				//rotate left (CC) for 5 seconds
 				if(t.Get() < timePerAction) drivetrain.MecanumDrive_Cartesian(0, 0, -testSpeed);
