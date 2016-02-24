@@ -54,25 +54,26 @@ public:
 
 	bool updateWinch(int t)
 	{
-		static int target=-1;
-		static int lastLimit=-1;
-		float out=0;
+		static int target = -1;
+		static int lastLimit = -1;
+		float out = 0;
 
 		//iterate through all of the limits, and save the last one
-		for(int ii=0;ii<=5;ii++)
+		for(int ii = 0;ii <= 5;ii++)
 		{
-			if(getLimit(ii)) lastLimit=ii;
+			if(getLimit(ii)) lastLimit = ii;
 		}
 
 		//check if we have a new target
-		if(t > -1) target=t;
+		if(t > -1) target = t;
 		//clear target if -2 passed (for disable)
-		if(t == -2) target=-1;
+		if(t == -2) target = -1;
 		//check for down
-		if(t == -3) target=-3;
+		if(t == -3) target = -3;
 
 		//if the stick is not being used, and we have a target, turn on the motor
 		if(std::abs(lifterStick.GetY()) < 0.05 && target != -1)
+
 		{
 			if(target == -3)
 			{
@@ -86,17 +87,17 @@ public:
 			}
 			else if(!getLimit(target))
 				//if the target is above the lastLimit, go up (-1), else go down (1)
-				out=target<lastLimit?1:-1;
+				out = target < lastLimit ? 1 : -1;
 			else
 			{
-				out=0;
-				target=-1; //clear the target
+				out = 0;
+				target = -1; //clear the target
 			}
 		}
 		else
 		{
-			out=lifterStick.GetY();
-			target=-1; //clear the target
+			out = lifterStick.GetY();
+			target = -1; //clear the target
 		}
 
 		//check if we have hit an end stop
@@ -120,7 +121,7 @@ public:
 
 	void updateDashboard()
 	{
-		for(int ii=0;ii<=5;ii++)
+		for(int ii = 0;ii <= 5;ii++)
 		{
 			SmartDashboard::PutBoolean("Winch " + std::to_string(ii), getLimit(ii));
 		}
@@ -145,7 +146,7 @@ public:
 	void AutonomousPeriodic()
 	{
 		static Timer t;
-		static short stage=0;
+		static short stage = 0;
 		switch(stage)
 		{
 		case 0:
@@ -176,9 +177,9 @@ public:
 		case 4:
 			gripper.Set(-1);
 			break;
-			updateDashboard();
-			LogData();
 		}
+		updateDashboard();
+		LogData();
 	}
 
 	void TeleopInit()
@@ -195,21 +196,22 @@ public:
 		float throttleScale = ((1 - driveStick.GetThrottle()) / 2);
 		float gripperScale = ((1 - lifterStick.GetThrottle()) / 2);
 
-		scaled[0] = (driveStick.GetX() + -(driveStick.GetPOV() == 90) + (driveStick.GetPOV() == 270))*throttleScale;
-		scaled[1] = driveStick.GetY()*throttleScale;
-		scaled[2] = driveStick.GetTwist()*throttleScale*driveStick.GetRawButton(2);
+		scaled[0] = (driveStick.GetX() + -(driveStick.GetPOV() == 90) + (driveStick.GetPOV() == 270)) * throttleScale;
+		scaled[1] = driveStick.GetY() * throttleScale;
+		scaled[2] = driveStick.GetTwist() * throttleScale * driveStick.GetRawButton(2) * 0.8;
 
 		drivetrain.MecanumDrive_Cartesian(scaled[0], scaled[1], scaled[2]);
 
 		//Winching
-		int winchButton=-1;
-		for(int jj=7;jj<=12;jj++)
+		int winchButton = -1;
+		for(int jj = 7;jj <= 12;jj++)
 		{
-			if(lifterStick.GetRawButton(jj)) winchButton=(jj-7);
+			if(lifterStick.GetRawButton(jj)) winchButton = (jj-7);
 		}
+		if(lifterStick.GetRawButton(3)) winchButton = 2;
 		winchButton = lifterStick.GetRawButton(1) ? -3 : winchButton;
 		updateWinch(winchButton);
-		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270))*gripperScale);
+		gripper.Set((-(lifterStick.GetPOV() == 90) + (lifterStick.GetPOV() == 270)) * gripperScale);
 
 		updateDashboard();
 		//Data logging
